@@ -26,9 +26,7 @@ function addListeners(){
 				  	activePieceRow = activePieceList.split(" ")[1];
 				  	activePieceColumn = activePieceList.split(" ")[3];
 				  	if(isValidMove(activePieceRow, squareRow, activePieceColumn, squareColumn, square)){
-				  		activePiece.innerHTML = "";
-				  		square.innerHTML = "<div class='"+activeColor+" piece'></div>";
-				  		resetActivePiece();
+				  		movePiece(activePiece, square);
 				  	}
 				  }
 				});
@@ -37,8 +35,17 @@ function addListeners(){
 	}
 }
 
+function movePiece(old, n){
+	old.innerHTML = "";
+	n.innerHTML = "<div class='"+activeColor+" piece'></div>";
+	resetActivePiece();
+}
+
 function isValidMove(activePieceRow, squareRow, activePieceColumn, squareColumn, square){
-	var activeColor = activePiece.children[0].classList[0];
+	var oppositeColor = '';
+	activeColor == 'black' ? oppositeColor = 'red' : oppositeColor = 'black';
+	var middleSquare = findMiddleSquare(activePieceRow, squareRow, activePieceColumn, squareColumn);
+
 	if(activeColor == 'black'){
 		var rowDifference = -1;
 	}
@@ -49,6 +56,24 @@ function isValidMove(activePieceRow, squareRow, activePieceColumn, squareColumn,
 		 Math.abs(letters.indexOf(activePieceColumn) - letters.indexOf(squareColumn)) == 1 && square.children.length == 0){
 		return true;
 	}
+	else if(numbers.indexOf(activePieceRow) - numbers.indexOf(squareRow) == rowDifference * 2 && 
+		 Math.abs(letters.indexOf(activePieceColumn) - letters.indexOf(squareColumn)) == 2 && square.children.length == 0 &&
+		 middleSquare.children[0].classList[0] == oppositeColor){
+		middleSquare.innerHTML = "";
+		return true;
+	}
+}
+
+function findMiddleSquare (activePieceRow, squareRow, activePieceColumn, squareColumn){
+	var activeRowIndex = numbers.indexOf(activePieceRow);
+	var squareRowIndex = numbers.indexOf(squareRow);
+	var middleRow = numbers[Math.abs((activeRowIndex + squareRowIndex)/2)];
+	
+	var activeColumnIndex = letters.indexOf(activePieceColumn);
+	var squareColumnIndex = letters.indexOf(squareColumn);
+	var middleColumn = letters[Math.abs((activeColumnIndex + squareColumnIndex)/2)];
+
+	return document.querySelector('.row.' + middleRow + ' div.square.' + middleColumn);
 }
 
 function setActivePiece(s){
