@@ -38,7 +38,14 @@ function addListeners(){
 }
 
 function isValidMove(activePieceRow, squareRow, activePieceColumn, squareColumn, square){
-	if(Math.abs(numbers.indexOf(activePieceRow) - numbers.indexOf(squareRow)) == 1 && 
+	var activeColor = activePiece.children[0].classList[0];
+	if(activeColor == 'black'){
+		var rowDifference = -1;
+	}
+	else{
+		rowDifference = 1;
+	}
+	if(numbers.indexOf(activePieceRow) - numbers.indexOf(squareRow) == rowDifference && 
 		 Math.abs(letters.indexOf(activePieceColumn) - letters.indexOf(squareColumn)) == 1 && square.children.length == 0){
 		return true;
 	}
