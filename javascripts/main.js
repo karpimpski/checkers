@@ -2,14 +2,68 @@ var board = document.querySelector('#board');
 var numbers = ['one','two','three','four','five','six','seven','eight'];
 var letters = ['a','b','c','d','e','f','g','h'];
 var colors = ['red','black'];
-addRows();
-addColumns();
-addPieces();
-addListeners();
-
 var activePiece = "";
 var activePieceList = "";
 var activeColor = "";
+setUp();
+addListeners();
+var currentColor = 'black';
+
+function addListeners(){
+	for(var i = 0; i < document.querySelectorAll('.square').length; i++){
+    (function () {
+      var square = document.querySelectorAll('.square')[i];
+			if(square.classList[2] == 'black'){
+				square.addEventListener("click", function(){
+					var squareList = square.parentElement.classList + " " + square.classList;
+					var squareRow = squareList.split(" ")[1];
+					var squareColumn = squareList.split(" ")[3];
+					
+					if(this.children.length > 0 && this.children[0].classList[0] == currentColor){
+				    setActivePiece(square);			    
+				  }
+				  else{
+				  	activePieceRow = activePieceList.split(" ")[1];
+				  	activePieceColumn = activePieceList.split(" ")[3];
+				  	if(isValidMove(activePieceRow, squareRow, activePieceColumn, squareColumn, square)){
+				  		activePiece.innerHTML = "";
+				  		square.innerHTML = "<div class='"+activeColor+" piece'></div>";
+				  		resetActivePiece();
+				  	}
+				  }
+				});
+			}
+    }());
+	}
+}
+
+function isValidMove(activePieceRow, squareRow, activePieceColumn, squareColumn, square){
+	if(Math.abs(numbers.indexOf(activePieceRow) - numbers.indexOf(squareRow)) == 1 && 
+		 Math.abs(letters.indexOf(activePieceColumn) - letters.indexOf(squareColumn)) == 1 && square.children.length == 0){
+		return true;
+	}
+}
+
+function setActivePiece(s){
+	if(s.children.length > 0){
+		activePiece = s;
+		activePieceList = activePiece.parentElement.classList + " " + activePiece.classList;
+		activeColor = s.querySelector('div').classList[0];
+	}
+}
+
+function resetActivePiece(){
+	activePiece = "";
+	activePieceList = "";
+	activeColor = "";
+	currentColor == 'black' ? currentColor = 'red' : currentColor = 'black';
+}
+
+function setUp(){ 
+	addRows();
+	addColumns();
+	addPieces();
+}
 
 function addRows(){
 	for(var i = 0; i < 8; i++){
@@ -40,46 +94,4 @@ function addPieces(){
 			square.innerHTML = '<div class="'+color+' piece"></div>';
 		}
 	}
-}
-
-function addListeners(){
-	for(var i = 0; i < document.querySelectorAll('.square').length; i++){
-    (function () {
-      var square = document.querySelectorAll('.square')[i];
-			if(square.classList[2] == 'black'){
-				square.addEventListener("click", function(){
-					var squareList = square.parentElement.classList + " " + square.classList;
-					var squareRow = squareList.split(" ")[1];
-					var squareColumn = squareList.split(" ")[3];
-					
-					if(activePiece == ""){
-				    setActivePiece(square);			    
-				  }
-				  else{
-				  	activePieceRow = activePieceList.split(" ")[1];
-				  	activePieceColumn = activePieceList.split(" ")[3];
-				  	if(Math.abs(numbers.indexOf(activePieceRow) - numbers.indexOf(squareRow)) == 1 && square.querySelector('div') == null){
-				  		activePiece.innerHTML = "";
-				  		square.innerHTML = "<div class='"+activeColor+" piece'></div>";
-				  		resetActivePiece();
-				  	}
-				  }
-				});
-			}
-    }());
-	}
-}
-
-function setActivePiece(s){
-	if(s.children.length > 0){
-		activePiece = s;
-		activePieceList = activePiece.parentElement.classList + " " + activePiece.classList;
-		activeColor = s.querySelector('div').classList[0];
-	}
-}
-
-function resetActivePiece(){
-	activePiece = "";
-	activePieceList = "";
-	activeColor = "";
 }
