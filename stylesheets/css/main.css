@@ -1,15 +1,22 @@
 body {
-  background: blue; }
+  background: #CBA36F;
+  font-family: Arial; }
+
+#board {
+  width: 600px;
+  height: 600px;
+  border: 2px solid white; }
 
 .row {
   display: flex;
-  width: 600px; }
+  width: 100%; }
 
 .square {
   display: flex;
   justify-content: center;
-  width: 75px;
-  height: 75px; }
+  width: 73px;
+  height: 73px;
+  border: 1px solid white; }
 
 .red {
   background: red; }
@@ -22,6 +29,9 @@ body {
   height: 50px;
   border-radius: 100%;
   margin-top: 12px;
-  border: 1px solid gray; }
+  border: 1px solid white; }
+
+.center {
+  justify-content: center; }
 
 /*# sourceMappingURL=main.css.map */
