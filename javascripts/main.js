@@ -21,7 +21,7 @@ function addListeners(){
 					var squareRow = squareList.split(" ")[1];
 					var squareColumn = squareList.split(" ")[3];
 					
-					if(this.children.length > 0 && this.children[0].classList[0] == currentColor && (activePiece == '' || canMove == false)){
+					if(this.children.length > 0 && findColor(this) == currentColor && (activePiece == '' || canMove == false)){
 				    setActivePiece(square);			    
 				  }
 				  else{
@@ -38,19 +38,43 @@ function addListeners(){
 }
 
 function movePiece(old, n, activePieceRow, activePieceColumn, squareRow, squareColumn){
+	n.innerHTML = old.innerHTML;
 	old.innerHTML = "";
-	n.innerHTML = "<div class='"+activeColor+" piece'></div>";
 	if(Math.abs(numbers.indexOf(activePieceRow) - numbers.indexOf(squareRow)) == 2 && 
 		 Math.abs(letters.indexOf(activePieceColumn) - letters.indexOf(squareColumn)) == 2){
 		var middleSquare = findMiddleSquare(activePieceRow, squareRow, activePieceColumn, squareColumn);
 		middleSquare.innerHTML = "";
 	}
 	if(canMove == false){
+		canMakeKing(n);
 		resetActivePiece();
 	}
 	else{
 		setActivePiece(n);
 	}
+}
+
+function canMakeKing(s){
+	if(findColor(s) == 'black' && findRow(s) == 'eight'){
+		makeKing(s);
+	}
+	else if(findColor(s) == 'red' && findRow(s) == 'one'){
+		makeKing(s);
+	}
+}
+
+function isKing(s){
+	if(s.children[0].innerHTML == 'K'){
+		return true;
+	}
+}
+
+function makeKing(s){
+	s.children[0].innerHTML = "K";
+}
+
+function findColor(s){
+	return s.children[0].classList[0];
 }
 
 function isValidMove(activePieceRow, squareRow, activePieceColumn, squareColumn, square){
@@ -64,13 +88,15 @@ function isValidMove(activePieceRow, squareRow, activePieceColumn, squareColumn,
 		rowDifference = 1;
 	}
 	if(numbers.indexOf(activePieceRow) - numbers.indexOf(squareRow) == rowDifference && 
-		 Math.abs(letters.indexOf(activePieceColumn) - letters.indexOf(squareColumn)) == 1 && square.children.length == 0){
+		 Math.abs(letters.indexOf(activePieceColumn) - letters.indexOf(squareColumn)) == 1 && square.children.length == 0 &&
+		 canMove == false){
 		canMove = false;
 		return true;
 	}
-	else if(numbers.indexOf(activePieceRow) - numbers.indexOf(squareRow) == rowDifference * 2 && 
-		 Math.abs(letters.indexOf(activePieceColumn) - letters.indexOf(squareColumn)) == 2 && square.children.length == 0 &&
-		 middleSquare.children[0].classList[0] == oppositeColor){
+	else if(square && middleSquare && middleSquare.children[0] && 
+				  numbers.indexOf(activePieceRow) - numbers.indexOf(squareRow) == rowDifference * 2 && 
+				  Math.abs(letters.indexOf(activePieceColumn) - letters.indexOf(squareColumn)) == 2 && square.children.length == 0 &&
+				  findColor(middleSquare) == oppositeColor){
 		if(canJump(square)){
 			canMove = true;
 		}
@@ -114,7 +140,6 @@ function canJump(s){
 }
 
 function findRow(s){
-	alert(s.parentElement.classList[1]);
 	return s.parentElement.classList[1];
 }
 
@@ -135,7 +160,7 @@ function findMiddleSquare (activePieceRow, squareRow, activePieceColumn, squareC
 	var squareColumnIndex = letters.indexOf(squareColumn);
 	var middleColumn = letters[Math.abs((activeColumnIndex + squareColumnIndex)/2)];
 
-	return document.querySelector('.row.' + middleRow + ' div.square.' + middleColumn);
+	return findSquare(middleRow, middleColumn);
 }
 
 function setActivePiece(s){

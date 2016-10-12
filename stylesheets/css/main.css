@@ -34,4 +34,9 @@ body {
 .center {
   justify-content: center; }
 
+.piece {
+  line-height: 50px;
+  text-align: center;
+  color: white; }
+
 /*# sourceMappingURL=main.css.map */
