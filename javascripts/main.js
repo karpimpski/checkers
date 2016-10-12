@@ -9,6 +9,8 @@ setUp();
 addListeners();
 var currentColor = 'black';
 
+var canMove = false;
+
 function addListeners(){
 	for(var i = 0; i < document.querySelectorAll('.square').length; i++){
     (function () {
@@ -19,14 +21,14 @@ function addListeners(){
 					var squareRow = squareList.split(" ")[1];
 					var squareColumn = squareList.split(" ")[3];
 					
-					if(this.children.length > 0 && this.children[0].classList[0] == currentColor){
+					if(this.children.length > 0 && this.children[0].classList[0] == currentColor && (activePiece == '' || canMove == false)){
 				    setActivePiece(square);			    
 				  }
 				  else{
-				  	activePieceRow = activePieceList.split(" ")[1];
-				  	activePieceColumn = activePieceList.split(" ")[3];
+				  	var activePieceRow = activePieceList.split(" ")[1];
+				  	var activePieceColumn = activePieceList.split(" ")[3];
 				  	if(isValidMove(activePieceRow, squareRow, activePieceColumn, squareColumn, square)){
-				  		movePiece(activePiece, square);
+				  		movePiece(activePiece, square, activePieceRow, activePieceColumn, squareRow, squareColumn);
 				  	}
 				  }
 				});
@@ -35,17 +37,26 @@ function addListeners(){
 	}
 }
 
-function movePiece(old, n){
+function movePiece(old, n, activePieceRow, activePieceColumn, squareRow, squareColumn){
 	old.innerHTML = "";
 	n.innerHTML = "<div class='"+activeColor+" piece'></div>";
-	resetActivePiece();
+	if(Math.abs(numbers.indexOf(activePieceRow) - numbers.indexOf(squareRow)) == 2 && 
+		 Math.abs(letters.indexOf(activePieceColumn) - letters.indexOf(squareColumn)) == 2){
+		var middleSquare = findMiddleSquare(activePieceRow, squareRow, activePieceColumn, squareColumn);
+		middleSquare.innerHTML = "";
+	}
+	if(canMove == false){
+		resetActivePiece();
+	}
+	else{
+		setActivePiece(n);
+	}
 }
 
 function isValidMove(activePieceRow, squareRow, activePieceColumn, squareColumn, square){
 	var oppositeColor = '';
 	activeColor == 'black' ? oppositeColor = 'red' : oppositeColor = 'black';
 	var middleSquare = findMiddleSquare(activePieceRow, squareRow, activePieceColumn, squareColumn);
-
 	if(activeColor == 'black'){
 		var rowDifference = -1;
 	}
@@ -54,14 +65,65 @@ function isValidMove(activePieceRow, squareRow, activePieceColumn, squareColumn,
 	}
 	if(numbers.indexOf(activePieceRow) - numbers.indexOf(squareRow) == rowDifference && 
 		 Math.abs(letters.indexOf(activePieceColumn) - letters.indexOf(squareColumn)) == 1 && square.children.length == 0){
+		canMove = false;
 		return true;
 	}
 	else if(numbers.indexOf(activePieceRow) - numbers.indexOf(squareRow) == rowDifference * 2 && 
 		 Math.abs(letters.indexOf(activePieceColumn) - letters.indexOf(squareColumn)) == 2 && square.children.length == 0 &&
 		 middleSquare.children[0].classList[0] == oppositeColor){
-		middleSquare.innerHTML = "";
+		if(canJump(square)){
+			canMove = true;
+		}
+		else{
+			canMove = false;
+		}
 		return true;
 	}
+
+	return false;
+}
+
+function canJump(s){
+	var squareRow = findRow(s);
+	var squareColumn = findColumn(s);
+	var downLeft = findSquare(numbers[numbers.indexOf(squareRow) + 2], letters[letters.indexOf(squareColumn) - 2]);
+	var downRight = findSquare(numbers[numbers.indexOf(squareRow) + 2], letters[letters.indexOf(squareColumn) + 2]);
+	var upLeft = findSquare(numbers[numbers.indexOf(squareRow) - 2], letters[letters.indexOf(squareColumn) - 2]);
+	var upRight = findSquare(numbers[numbers.indexOf(squareRow) - 2], letters[letters.indexOf(squareColumn) + 2]);
+	if(activeColor == 'black' && isValidMove(squareRow, numbers[numbers.indexOf(squareRow) + 2], squareColumn, 
+		 letters[letters.indexOf(squareColumn) - 2], downLeft)){
+		alert("Double");
+		return true;
+	}
+	else if(activeColor == 'black' && isValidMove(squareRow, numbers[numbers.indexOf(squareRow) + 2], squareColumn, 
+		 letters[letters.indexOf(squareColumn) + 2], downRight)){
+		alert("Double");
+		return true;
+	}
+	else if(activeColor == 'red' && isValidMove(squareRow, numbers[numbers.indexOf(squareRow) - 2], squareColumn, 
+		 letters[letters.indexOf(squareColumn) - 2], upLeft)){
+		alert("Double");
+		return true;
+	}
+	else if(activeColor == 'red' && isValidMove(squareRow, numbers[numbers.indexOf(squareRow) - 2], squareColumn, 
+		 letters[letters.indexOf(squareColumn) + 2], upRight)){
+		alert("Double");
+		return true;
+	}
+	return false;
+}
+
+function findRow(s){
+	alert(s.parentElement.classList[1]);
+	return s.parentElement.classList[1];
+}
+
+function findColumn(s){
+	return s.classList[1];
+}
+
+function findSquare(row, column){
+	return document.querySelector('.row.' + row + ' div.square.' + column);
 }
 
 function findMiddleSquare (activePieceRow, squareRow, activePieceColumn, squareColumn){
