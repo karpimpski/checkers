@@ -27,7 +27,7 @@ function addListeners(){
 				  else{
 				  	var activePieceRow = activePieceList.split(" ")[1];
 				  	var activePieceColumn = activePieceList.split(" ")[3];
-				  	if(isValidMove(activePieceRow, squareRow, activePieceColumn, squareColumn, square)){
+				  	if(isValidMove(square)){
 				  		movePiece(activePiece, square, activePieceRow, activePieceColumn, squareRow, squareColumn);
 				  	}
 				  }
@@ -64,7 +64,7 @@ function canMakeKing(s){
 }
 
 function isKing(s){
-	if(s.children[0].innerHTML == 'K'){
+	if(s.children && s.children[0].innerHTML == 'K'){
 		return true;
 	}
 }
@@ -77,7 +77,11 @@ function findColor(s){
 	return s.children[0].classList[0];
 }
 
-function isValidMove(activePieceRow, squareRow, activePieceColumn, squareColumn, square){
+function isValidMove(square, active = activePiece){
+	var activePieceRow = findRow(active);
+	var squareRow = findRow(square);
+	var activePieceColumn = findColumn(active);
+	var squareColumn = findColumn(square);
 	var oppositeColor = '';
 	activeColor == 'black' ? oppositeColor = 'red' : oppositeColor = 'black';
 	var middleSquare = findMiddleSquare(activePieceRow, squareRow, activePieceColumn, squareColumn);
@@ -87,16 +91,19 @@ function isValidMove(activePieceRow, squareRow, activePieceColumn, squareColumn,
 	else{
 		rowDifference = 1;
 	}
-	if(numbers.indexOf(activePieceRow) - numbers.indexOf(squareRow) == rowDifference && 
+	if((numbers.indexOf(activePieceRow) - numbers.indexOf(squareRow) == rowDifference ||
+	    isKing(activePiece) && Math.abs(numbers.indexOf(activePieceRow) - numbers.indexOf(squareRow)) == 1) && 
 		 Math.abs(letters.indexOf(activePieceColumn) - letters.indexOf(squareColumn)) == 1 && square.children.length == 0 &&
 		 canMove == false){
 		canMove = false;
 		return true;
 	}
 	else if(square && middleSquare && middleSquare.children[0] && 
-				  numbers.indexOf(activePieceRow) - numbers.indexOf(squareRow) == rowDifference * 2 && 
+				  (numbers.indexOf(activePieceRow) - numbers.indexOf(squareRow) == rowDifference * 2 ||
+				  isKing(activePiece) && Math.abs(numbers.indexOf(activePieceRow) - numbers.indexOf(squareRow)) == 2) && 
 				  Math.abs(letters.indexOf(activePieceColumn) - letters.indexOf(squareColumn)) == 2 && square.children.length == 0 &&
 				  findColor(middleSquare) == oppositeColor){
+		alert(middleSquare.classList);
 		if(canJump(square)){
 			canMove = true;
 		}
@@ -116,23 +123,19 @@ function canJump(s){
 	var downRight = findSquare(numbers[numbers.indexOf(squareRow) + 2], letters[letters.indexOf(squareColumn) + 2]);
 	var upLeft = findSquare(numbers[numbers.indexOf(squareRow) - 2], letters[letters.indexOf(squareColumn) - 2]);
 	var upRight = findSquare(numbers[numbers.indexOf(squareRow) - 2], letters[letters.indexOf(squareColumn) + 2]);
-	if(activeColor == 'black' && isValidMove(squareRow, numbers[numbers.indexOf(squareRow) + 2], squareColumn, 
-		 letters[letters.indexOf(squareColumn) - 2], downLeft)){
+	if((activeColor == 'black' || isKing(activePiece)) && isValidMove(downLeft, s)){
 		alert("Double");
 		return true;
 	}
-	else if(activeColor == 'black' && isValidMove(squareRow, numbers[numbers.indexOf(squareRow) + 2], squareColumn, 
-		 letters[letters.indexOf(squareColumn) + 2], downRight)){
+	else if((activeColor == 'black' || isKing(activePiece)) && isValidMove(downRight, s)){
 		alert("Double");
 		return true;
 	}
-	else if(activeColor == 'red' && isValidMove(squareRow, numbers[numbers.indexOf(squareRow) - 2], squareColumn, 
-		 letters[letters.indexOf(squareColumn) - 2], upLeft)){
+	else if((activeColor == 'red' || isKing(activePiece)) && isValidMove(upLeft, s)){
 		alert("Double");
 		return true;
 	}
-	else if(activeColor == 'red' && isValidMove(squareRow, numbers[numbers.indexOf(squareRow) - 2], squareColumn, 
-		 letters[letters.indexOf(squareColumn) + 2], upRight)){
+	else if((activeColor == 'red' || isKing(activePiece)) && isValidMove(upRight, s)){
 		alert("Double");
 		return true;
 	}
@@ -140,11 +143,15 @@ function canJump(s){
 }
 
 function findRow(s){
-	return s.parentElement.classList[1];
+	if(s){
+		return s.parentElement.classList[1];
+	}
 }
 
 function findColumn(s){
-	return s.classList[1];
+	if(s){
+		return s.classList[1];
+	}
 }
 
 function findSquare(row, column){
