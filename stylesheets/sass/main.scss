@@ -1,25 +1,32 @@
 body{
 	background: #CBA36F;
 	font-family: Arial;
+	text-align: center;
 }
 
 #board{
 	width: 600px;
 	height: 600px;
 	border: 2px solid white;
+	margin: 0 auto;
 }
 
 .row{
-	display: flex;
 	width: 100%;
 }
 
 .square{
-	display: flex;
-	justify-content: center;
+	display: inline-block;
+}
+
+.square{
 	width: 73px;
 	height: 73px;
 	border: 1px solid white;
+}
+
+.piece{
+	margin: 0 auto;
 }
 
 .red{
@@ -36,10 +43,6 @@ body{
 	border-radius: 100%;
 	margin-top: 12px;
 	border: 1px solid white;
-}
-
-.center{
-	justify-content: center;
 }
 
 .piece{
