@@ -155,19 +155,15 @@ function canJump(s){
 	var upLeft = findSquare(numbers[numbers.indexOf(squareRow) - 2], letters[letters.indexOf(squareColumn) - 2]);
 	var upRight = findSquare(numbers[numbers.indexOf(squareRow) - 2], letters[letters.indexOf(squareColumn) + 2]);
 	if((activeColor == 'black' || isKing(activePiece)) && testTwo(s, downLeft, -1)){
-		alert("Double");
 		return true;
 	}
 	else if((activeColor == 'black' || isKing(activePiece)) && testTwo(s, downRight, -1)){
-		alert("Double");
 		return true;
 	}
 	else if((activeColor == 'red' || isKing(activePiece)) && testTwo(s, upLeft, 1)){
-		alert("Double");
 		return true;
 	}
 	else if((activeColor == 'red' || isKing(activePiece)) && testTwo(s, upRight, 1)){
-		alert("Double");
 		return true;
 	}
 	return false;
