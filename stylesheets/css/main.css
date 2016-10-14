@@ -1,11 +1,20 @@
 body {
-  background: #CBA36F;
-  font-family: Arial; }
+  background: #9C0F5F;
+  font-family: Arial;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none; }
+
+h1 {
+  cursor: default; }
 
 #board {
   width: 600px;
   height: 600px;
-  border: 2px solid white; }
+  border: 2px solid black; }
 
 .row {
   display: flex;
@@ -16,20 +25,26 @@ body {
   justify-content: center;
   width: 73px;
   height: 73px;
-  border: 1px solid white; }
+  border: 1px solid black; }
 
 .red {
-  background: red; }
+  background: #F2671F; }
 
 .black {
-  background: black; }
+  background: #160A47; }
+
+.red.piece {
+  background: #C01A24; }
+
+.black.piece {
+  background: #5B0374; }
 
 .piece {
   width: 50px;
   height: 50px;
   border-radius: 100%;
   margin-top: 12px;
-  border: 1px solid white; }
+  border: 1px solid black; }
 
 .center {
   justify-content: center; }
@@ -38,5 +53,23 @@ body {
   line-height: 50px;
   text-align: center;
   color: white; }
+
+.piece.active.black {
+  background: #8204a6 !important; }
+
+.piece.active.black:hover, .piece.active.red:hover {
+  cursor: pointer; }
+
+.piece.active.red {
+  background: #e22b36 !important; }
+
+.piece.active_group:hover {
+  cursor: pointer; }
+
+.black.piece.active_group:hover {
+  background: #6f048d; }
+
+.red.piece.active_group:hover {
+  background: #d61d28; }
 
 /*# sourceMappingURL=main.css.map */

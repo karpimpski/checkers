@@ -11,6 +11,22 @@ var currentColor = 'black';
 
 var canMove = false;
 
+addActiveGroup('black');
+
+function addActiveGroup(color){
+	var elements = document.querySelectorAll('.'+color+'.piece');
+	for(var i = 0; i < elements.length; i++){
+		elements[i].classList += ' active_group';
+	}
+}
+
+function removeActiveGroup(color){
+	var elements = document.querySelectorAll('.'+color+'.piece');
+	for(var i = 0; i < elements.length; i++){
+		elements[i].classList.remove('active_group');
+	}
+}
+
 function addListeners(){
 	for(var i = 0; i < document.querySelectorAll('.square').length; i++){
     (function () {
@@ -91,13 +107,14 @@ function isValidMove(square, active = activePiece){
 	else{
 		rowDifference = 1;
 	}
-	if(testOne(square, rowDifference)){
+	if(canMove == false && testOne(square, rowDifference)){
 		canMove = false;
 		return true;
 	}
 	else if(testTwo(active, square, rowDifference)){
 		if(canJump(square)){
 			canMove = true;
+			removeActiveGroup(currentColor);
 		}
 		else{
 			canMove = false;
@@ -123,7 +140,7 @@ function testTwo(active, square, rowDifference){
 	activeColor == 'black' ? oppositeColor = 'red' : oppositeColor = 'black';
 	if(square && middleSquare && middleSquare.children[0] && 
 				  (numbers.indexOf(findRow(active)) - numbers.indexOf(findRow(square)) == rowDifference * 2 ||
-				  isKing(activePiece) && Math.abs(numbers.indexOf(findRow(active)) - numbers.indexOf(findRow(square))) == 2) && 
+				  (isKing(activePiece) && Math.abs(numbers.indexOf(findRow(active)) - numbers.indexOf(findRow(square))) == 2)) && 
 				  Math.abs(letters.indexOf(findColumn(active)) - letters.indexOf(findColumn(square))) == 2 && square.children.length == 0 &&
 				  findColor(middleSquare) == oppositeColor){
 		return true;
@@ -137,19 +154,19 @@ function canJump(s){
 	var downRight = findSquare(numbers[numbers.indexOf(squareRow) + 2], letters[letters.indexOf(squareColumn) + 2]);
 	var upLeft = findSquare(numbers[numbers.indexOf(squareRow) - 2], letters[letters.indexOf(squareColumn) - 2]);
 	var upRight = findSquare(numbers[numbers.indexOf(squareRow) - 2], letters[letters.indexOf(squareColumn) + 2]);
-	if((activeColor == 'black' || isKing(activePiece)) && testTwo(s, downLeft, 2)){
+	if((activeColor == 'black' || isKing(activePiece)) && testTwo(s, downLeft, -1)){
 		alert("Double");
 		return true;
 	}
-	else if((activeColor == 'black' || isKing(activePiece)) && testTwo(s, downRight, 2)){
+	else if((activeColor == 'black' || isKing(activePiece)) && testTwo(s, downRight, -1)){
 		alert("Double");
 		return true;
 	}
-	else if((activeColor == 'red' || isKing(activePiece)) && testTwo(s, upLeft, 2)){
+	else if((activeColor == 'red' || isKing(activePiece)) && testTwo(s, upLeft, 1)){
 		alert("Double");
 		return true;
 	}
-	else if((activeColor == 'red' || isKing(activePiece)) && testTwo(s, upRight, 2)){
+	else if((activeColor == 'red' || isKing(activePiece)) && testTwo(s, upRight, 1)){
 		alert("Double");
 		return true;
 	}
@@ -186,17 +203,28 @@ function findMiddleSquare (activePieceRow, squareRow, activePieceColumn, squareC
 
 function setActivePiece(s){
 	if(s.children.length > 0){
+		if(activePiece && activePiece.children[0]){
+			activePiece.children[0].classList.remove('active');
+		}
 		activePiece = s;
 		activePieceList = activePiece.parentElement.classList + " " + activePiece.classList;
 		activeColor = s.querySelector('div').classList[0];
+		activePiece.children[0].classList = activePiece.children[0].classList + " active";
 	}
 }
 
 function resetActivePiece(){
+	document.querySelector('.active').classList.remove('active');
 	activePiece = "";
 	activePieceList = "";
 	activeColor = "";
+	changeColor();
+}
+
+function changeColor(){
+	removeActiveGroup(currentColor);
 	currentColor == 'black' ? currentColor = 'red' : currentColor = 'black';
+	addActiveGroup(currentColor);
 }
 
 function setUp(){ 

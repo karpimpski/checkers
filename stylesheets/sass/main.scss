@@ -1,12 +1,28 @@
+$square_one_color: #160A47;
+$square_two_color: #F2671F;
+$piece_one_color: #5B0374;
+$piece_two_color: #C01A24;
+$border: black;
+
 body{
-	background: #CBA36F;
+	background: #9C0F5F;
 	font-family: Arial;
+	-webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+h1{
+	cursor: default;
 }
 
 #board{
 	width: 600px;
 	height: 600px;
-	border: 2px solid white;
+	border: 2px solid $border;
 }
 
 .row{
@@ -19,15 +35,23 @@ body{
 	justify-content: center;
 	width: 73px;
 	height: 73px;
-	border: 1px solid white;
+	border: 1px solid $border;
 }
 
 .red{
-	background: red;
+	background: $square_two_color;
 }
 
 .black{
-	background: black;
+	background: $square_one_color;
+}
+
+.red.piece{
+	background: $piece_two_color;
+}
+
+.black.piece{
+	background: $piece_one_color;
 }
 
 .piece{
@@ -35,7 +59,7 @@ body{
 	height: 50px;
 	border-radius: 100%;
 	margin-top: 12px;
-	border: 1px solid white;
+	border: 1px solid $border;
 }
 
 .center{
@@ -46,4 +70,28 @@ body{
 	line-height: 50px;
 	text-align: center;
 	color: white;
+}
+
+.piece.active.black{
+	background: lighten($piece_one_color, 10%) !important;
+}
+
+.piece.active.black:hover, .piece.active.red:hover{
+	cursor: pointer;
+}
+
+.piece.active.red{
+	background: lighten($piece_two_color, 10%) !important;
+}
+
+.piece.active_group:hover{
+	cursor: pointer;
+}
+
+.black.piece.active_group:hover{
+	background: lighten($piece_one_color, 5%);
+}
+
+.red.piece.active_group:hover{
+	background: lighten($piece_two_color, 5%);
 }
